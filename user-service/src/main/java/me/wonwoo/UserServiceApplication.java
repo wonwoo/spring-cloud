@@ -24,7 +24,6 @@ class UserRestController {
 
 	@GetMapping("/users")
 	public List<User> findByUsers() {
-		System.out.println("test");
 		return Arrays.asList(new User("wonwoo"), new User("kevin"));
 	}
 }
