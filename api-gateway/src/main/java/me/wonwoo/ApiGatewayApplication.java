@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,14 +42,25 @@ class UserRestController{
 	}
 
 	@GetMapping("/users")
-	@HystrixCommand(fallbackMethod = "fallback")
+	@HystrixCommand(fallbackMethod = "usersFallback")
 	public List<User> getUsers() {
 		return restTemplate.exchange("http://user-service/users", HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<User>>() {}).getBody();
 	}
 
-	public List<User> fallback() {
+	@GetMapping("/users/{name}")
+	@HystrixCommand(fallbackMethod = "userFallback")
+	public User getUser (@PathVariable String name) {
+		return restTemplate.exchange("http://user-service/users/" + name, HttpMethod.GET, null,
+				User.class).getBody();
+	}
+
+	public List<User> usersFallback() {
 		return Collections.emptyList();
+	}
+
+	public User userFallback(String name) {
+		return new User();
 	}
 }
 
