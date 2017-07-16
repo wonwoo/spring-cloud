@@ -1,5 +1,6 @@
 package me.wonwoo;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -29,10 +31,8 @@ public class ApiGatewayApplication {
 	}
 }
 
-
 @RestController
 class UserRestController{
-
 
 	private final RestTemplate restTemplate;
 
@@ -40,10 +40,15 @@ class UserRestController{
 		this.restTemplate = restTemplate;
 	}
 
-	@GetMapping
+	@GetMapping("/users")
+	@HystrixCommand(fallbackMethod = "fallback")
 	public List<User> getUsers() {
 		return restTemplate.exchange("http://user-service/users", HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<User>>() {}).getBody();
+	}
+
+	public List<User> fallback() {
+		return Collections.emptyList();
 	}
 }
 
