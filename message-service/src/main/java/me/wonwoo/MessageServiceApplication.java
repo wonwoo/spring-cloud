@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-
 public class MessageServiceApplication {
 
 	public static void main(String[] args) {

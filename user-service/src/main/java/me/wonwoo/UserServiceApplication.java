@@ -22,7 +22,6 @@ public class UserServiceApplication {
 	}
 }
 
-
 @RestController
 @RefreshScope
 class UserRestController {
@@ -50,7 +49,6 @@ class UserRestController {
 	}
 
 }
-
 
 class User {
 	private String name;
