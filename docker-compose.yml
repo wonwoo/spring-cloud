@@ -1,0 +1,59 @@
+version: '2'
+services:
+  config-server:
+    image: wonwoo/config-service
+    container_name: config-server
+    ports:
+     - 8888:8888
+
+  discovery-server:
+    image: wonwoo/eureka-service
+    container_name: discovery-server
+    links:
+     - config-server
+    depends_on:
+     - config-server
+    entrypoint: ["./wait-for-it.sh","config-server:8888","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    ports:
+     - 8761:8761
+
+  message-server:
+    image: wonwoo/message-service
+    container_name: message-server
+    links:
+     - config-server
+     - discovery-server
+    depends_on:
+     - config-server
+     - discovery-server
+    entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    ports:
+    - 8081:8081
+
+  user-server:
+    image: wonwoo/user-service
+    container_name: user-server
+    links:
+     - config-server
+     - discovery-server
+    depends_on:
+     - config-server
+     - discovery-server
+    entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    ports:
+     - 8082:8082
+
+  api-gateway:
+    image: wonwoo/api-gateway
+    container_name: api-gateway
+    links:
+     - config-server
+     - discovery-server
+     - user-server
+     - message-server
+    depends_on:
+     - config-server
+     - discovery-server
+    entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    ports:
+     - 8080:8080
