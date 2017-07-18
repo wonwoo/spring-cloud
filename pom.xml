@@ -23,10 +23,13 @@
         <module>api-gateway</module>
         <module>message-service</module>
         <module>user-service</module>
+        <module>hystrix-dashboard</module>
     </modules>
 
     <properties>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <docker.image.prefix>wonwoo</docker.image.prefix>
+        <docker.version>0.4.13</docker.version>
     </properties>
 
     <dependencyManagement>

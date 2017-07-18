@@ -28,7 +28,7 @@ services:
      - discovery-server
     entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
     ports:
-    - 8081:8081
+    - 8082:8082
 
   user-server:
     image: wonwoo/user-service
@@ -41,7 +41,7 @@ services:
      - discovery-server
     entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
     ports:
-     - 8082:8082
+     - 8081:8081
 
   api-gateway:
     image: wonwoo/api-gateway
@@ -57,3 +57,15 @@ services:
     entrypoint: ["./wait-for-it.sh","discovery-server:8761","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
     ports:
      - 8080:8080
+
+  hystrix-server:
+    image: wonwoo/hystrix-dashboard
+    container_name: hystrix-server
+    links:
+     - config-server
+    depends_on:
+     - config-server
+     - api-gateway
+    entrypoint: ["./wait-for-it.sh","config-server:8888","--timeout=60","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+    ports:
+     - 8001:8001

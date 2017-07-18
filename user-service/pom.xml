@@ -20,8 +20,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
-		<docker.image.prefix>wonwoo</docker.image.prefix>
 	</properties>
 
 	<dependencies>
@@ -63,7 +61,7 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.13</version>
+				<version>${docker.version}</version>
 				<executions>
 					<execution>
 						<phase>install</phase>
